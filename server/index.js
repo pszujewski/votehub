@@ -1,7 +1,14 @@
+require("dotenv").config();
+
 const path = require("path");
 const express = require("express");
 
 const app = express();
+
+const knex = require("knex")({
+  client: "pg",
+  connection: process.env.DATABASE_URL,
+});
 
 // API routes
 
