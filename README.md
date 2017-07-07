@@ -1,6 +1,6 @@
-# Thinkful Full Stack Template
+# VoteHub
 
-A template for developing and deploying full stack JavaScript apps.
+A social voting platform
 
 ## Getting started
 
