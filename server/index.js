@@ -5,13 +5,11 @@ const express = require("express");
 
 const app = express();
 
-const knex = require("knex")({
-  client: "pg",
-  connection: process.env.DATABASE_URL,
-});
+// Require the routers
+const { userRouter } = require("./routes/user/userRouter");
 
 // API routes
-
+app.use("/api/user", userRouter);
 
 // Serve the built client
 app.use(express.static(path.resolve(__dirname, "../client/build")));

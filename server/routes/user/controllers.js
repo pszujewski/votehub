@@ -1,3 +1,4 @@
+const randomToken = require("random-token");
 const { hashPassword } = require("../../auth/password");
 
 const knex = require("knex")({
@@ -6,14 +7,16 @@ const knex = require("knex")({
 });
 
 const createUser = (req, email, hash) => {
+  const accessToken = randomToken(16);
   return knex.insert({
     email,
     password: hash,
+    accessToken,
     displayName: `${req.firstName} ${req.lastName}`,
   })
   .into("users")
   .returning(["email", "displayName"]);
-}
+};
 
 exports.signUp = (req, res, next) => {
   // check validity of email and password
@@ -31,7 +34,7 @@ exports.signUp = (req, res, next) => {
     .then((_user) => {
       if (_user) {
         const message = `User ${req.body.email} already exists`;
-        return res.status(404).json({message: message});
+        return res.status(404).json({ message });
       }
       return hashPassword(password);
     })
@@ -39,3 +42,8 @@ exports.signUp = (req, res, next) => {
     .then(newUser => res.status(201).json(newUser))
     .catch(err => res.status(500).send(err));
 };
+
+// Need a controller that fetches all of a user's polls.
+
+exports.logIn = (req, res, next) => res.status(200).json(req.user);
+

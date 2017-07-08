@@ -16,7 +16,9 @@
     "knex": "^0.13.0",
     "nodemon": "^1.11.0",
     "passport": "^0.3.2",
-    "passport-http": "^0.3.0"
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "random-token": "0.0.8"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
