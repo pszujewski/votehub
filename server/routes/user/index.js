@@ -1,6 +1,6 @@
 const express = require("express");
 const { passport } = require("../../auth/strategies");
-const jsonParser = require("body-parser");
+const jsonParser = require("body-parser").json();
 
 const {
   signUp,
@@ -18,6 +18,6 @@ router.get("/log-in", passport.authenticate("basic", { session: false }), logIn)
 
 router.get("/me",
   passport.authenticate("bearer", { session: false }),
-  (req, res, next) => res.status(200).json(req.user));
+  (req, res) => res.status(200).json(req.user));
 
 module.exports = { userRouter: router };

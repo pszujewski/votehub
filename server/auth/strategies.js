@@ -1,6 +1,6 @@
 const passport = require("passport");
 const { BasicStrategy } = require("passport-http");
-const { BearerStrategy } = require("passport-http-bearer");
+const BearerStrategy = require("passport-http-bearer").Strategy;
 
 const { validatePassword } = require("./password");
 

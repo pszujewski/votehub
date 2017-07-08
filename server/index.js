@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 
 // Require the routers
-const { userRouter } = require("./routes/user/userRouter");
+const { userRouter } = require("./routes/user");
 
 // API routes
 app.use("/api/user", userRouter);
@@ -25,7 +25,8 @@ let server;
 function runServer(port = 3001) {
   return new Promise((resolve, reject) => {
     server = app.listen(port, () => {
-      resolve();
+      console.log("api server is running...");
+      return resolve();
     }).on("error", reject);
   });
 }
