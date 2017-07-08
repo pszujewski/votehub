@@ -8,7 +8,13 @@ CREATE TABLE users (
 
 CREATE TABLE polls (
   id serial PRIMARY KEY,
+  created_by int REFERENCES "users"(id),
   "date" timestamp NOT NULL,
-  question text NOT NULL,
-  choices text[]
+  question text NOT NULL
+);
+
+CREATE TABLE choices (
+  id serial PRIMARY KEY,
+  poll_id int REFERENCES "polls"(id),
+  votes int DEFAULT 0
 );

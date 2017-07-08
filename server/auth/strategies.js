@@ -12,12 +12,12 @@ const knex = require("knex")({
 const basicStrategy = new BasicStrategy((username, password, callback) => {
   let user;
   return knex
-    .select("id", "email", "displayname", "password", "accessToken")
+    .select("id", "email", "displayname", "password", "accesstoken")
     .from("users")
     .where("email", username)
     .then((_user) => {
-      user = _user;
-      return validatePassword(password, _user.password);
+      user = _user[0];
+      return validatePassword(password, user.password);
     })
     .then((isValid) => {
       if (!isValid) {
@@ -30,14 +30,18 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
 
 const bearerStrategy = new BearerStrategy((token, done) => {
   return knex
-    .select("id", "email", "displayname", "accessToken")
+    .select("id", "email", "displayname", "accesstoken")
     .from("users")
-    .where("accessToken", token)
+    .where("accesstoken", token)
     .then((user) => {
-      if (!user) {
+      /*
+       Need to confirm this when working on client!
+      */ 
+      console.log(user);
+      if (user.length < 1) {
         return done(null, false);
       }
-      return done(null, user);
+      return done(null, user[0]);
     })
     .catch(err => console.log(err));
 });

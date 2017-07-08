@@ -1,3 +1,4 @@
+const randomToken = require("random-token");
 const { hashPassword } = require("../../auth/password");
 
 const knex = require("knex")({
@@ -6,14 +7,14 @@ const knex = require("knex")({
 });
 
 const createUser = (req, email, hash) => {
-  const accesstoken = "accesstoken";
-  const displayname = `${req.body.firstName}${req.body.lastName}`;
-  const row = { email, displayname, accesstoken, password: hash };
-  console.log(row);
-  return knex.insert(row).into("users").then(result => result);
+  const accesstoken = randomToken(16);
+  const displayname = `${req.body.firstName} ${req.body.lastName}`;
+  const user = { email, displayname, accesstoken, password: hash };
+  return knex.insert(user)
+    .returning(["email", "displayname", "accesstoken"])
+    .into("users")
+    .then(result => result[0]);
 };
-
-//.returning(["email", "displayname", "accesstoken"])
 
 exports.signUp = (req, res) => {
   // check validity of email and password
@@ -36,7 +37,7 @@ exports.signUp = (req, res) => {
       }
       return hashPassword(password);
     })
-    .then(hash => createUser(req, email, password))
+    .then(hash => createUser(req, email, hash))
     .then(newUser => res.status(201).json(newUser))
     .catch(err => res.status(500).send(err));
 };
