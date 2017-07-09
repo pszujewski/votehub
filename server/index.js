@@ -7,9 +7,11 @@ const app = express();
 
 // Require the routers
 const { userRouter } = require("./routes/user");
+const { pollsRouter } = require("./routes/polls");
 
 // API routes
 app.use("/api/user", userRouter);
+app.use("api/polls", pollsRouter);
 
 // Serve the built client
 app.use(express.static(path.resolve(__dirname, "../client/build")));

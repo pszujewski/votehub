@@ -16,5 +16,6 @@ CREATE TABLE polls (
 CREATE TABLE choices (
   id serial PRIMARY KEY,
   poll_id int REFERENCES "polls"(id),
+  content text NOT NULL,
   votes int DEFAULT 0
 );
