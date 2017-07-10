@@ -1,8 +1,11 @@
+const knex = require("knex")({
+  client: "pg",
+  connection: process.env.DATABASE_URL,
+});
+
 function insertPoll(question, userId) {
-  const newPoll = {
-    created_by: Number(userId),
-    question,
-  };
+  const created_by = Number(userId);
+  const newPoll = { created_by, question };
   return knex.insert(newPoll)
     .returning(["id", "created_by", "question"])
     .into("polls")
@@ -43,3 +46,59 @@ exports.createPoll = (req, res) => { // to review and test
     })
     .catch(err => res.status(500).json(err));
 };
+
+exports.getAllPolls = (req, res) => {
+  return knex.select("*")
+    .from("polls")
+    .then(polls => {
+      console.log(polls);
+      return res.status(200).json(polls);
+    })
+    .catch(err => res.status(500).json(err));
+};
+
+exports.getUsersPolls = (req, res) => {
+  return knex.select("*")
+    .from("polls")
+    .where("created_by", req.params.userId)
+    .then(polls => { 
+      console.log(polls);
+      return res.status(200).json(polls);
+    })
+    .catch(err => res.status(500).json(err));
+};
+
+function getPollById(pollId) {
+  return knex.select("*")
+    .from("polls")
+    .where("id", pollId)
+    .then((poll) => {
+      console.log(poll);
+      return poll[0];
+    });
+}
+
+function getChoicesByPollId(pollId) {
+  return knex.select("*")
+    .from("choices")
+    .where("poll_id", pollId)
+    .then((choices) => {
+      console.log(choices);
+      return choices;
+    });
+}
+
+exports.findOnePoll = (req, res) => {
+  const { pollId } = req.params;
+  const data = [];
+  data.push(getPollById(pollId));
+  data.push(getChoicesByPollId(pollId));
+  return Promise.all(data)
+    .then(data => {
+      // combine the data before sending to client
+      console.log(data);
+      return res.status(200).json(data);
+    })
+    .catch(err => res.status(500).json(err));
+};
+
